@@ -11,9 +11,8 @@ app.use(express.json());
 
 // toyMarket
 // mkxCiXSvbomtCofl
-
-const uri =
-  "mongodb+srv://toyMarket:mkxCiXSvbomtCofl@cluster0.xsh8x1y.mongodb.net/?retryWrites=true&w=majority";
+console.log(process.env.DB_USER);
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xsh8x1y.mongodb.net/?retryWrites=true&w=majority`;
 // Create a new MongoClient
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -30,7 +29,7 @@ async function run() {
     );
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
