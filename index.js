@@ -36,10 +36,44 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/frozen", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await frozenCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/frozen", async (req, res) => {
       const newFrozen = req.body;
 
       const result = await frozenCollection.insertOne(newFrozen);
+      res.send(result);
+    });
+
+    app.put("/frozen/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+
+      const options = { upsert: true };
+      const updatedFrozen = req.body;
+      const update = {
+        $set: {
+          Price: updatedFrozen.Price,
+          quantity: updatedFrozen.quantity,
+          description: updatedFrozen.description,
+        },
+      };
+      const result = await frozenCollection.updateOne(filter, update, options);
+      res.send(result);
+    });
+
+    app.delete("/frozen/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await frozenCollection.deleteOne(query);
       res.send(result);
     });
 
