@@ -36,6 +36,13 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/frozen", async (req, res) => {
+      const newFrozen = req.body;
+
+      const result = await frozenCollection.insertOne(newFrozen);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
