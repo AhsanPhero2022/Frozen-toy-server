@@ -36,8 +36,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/frozen", async (req, res) => {
-      console.log(req.query.email);
+    app.get("/myToys", async (req, res) => {
       let query = {};
       if (req.query?.email) {
         query = { email: req.query.email };
