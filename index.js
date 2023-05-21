@@ -18,13 +18,37 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const frozenCollection = client.db("DesnyToys").collection("frozen");
 
     app.get("/frozen", async (req, res) => {
       const cursor = frozenCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/frozenSort", async (req, res) => {
+      try {
+        const result = await frozenCollection.find().toArray();
+        const sortedResult = result.sort((a, b) => a.price - b.price); // Sort by price in ascending order
+        res.send(sortedResult);
+      } catch (error) {
+        console.error("Error retrieving frozen items:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+
+    app.get("/frozenSearch/:text", async (req, res) => {
+      const text = req.params.text;
+      const result = await frozenCollection
+        .find({
+          $or: [
+            { title: { $regex: text, $options: "i" } },
+            { sub_category: { $regex: text, $options: "i" } },
+          ],
+        })
+        .toArray();
       res.send(result);
     });
 
