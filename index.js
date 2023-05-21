@@ -28,15 +28,21 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/frozenSort", async (req, res) => {
-      try {
-        const result = await frozenCollection.find().toArray();
-        const sortedResult = result.sort((a, b) => a.price - b.price); // Sort by price in ascending order
-        res.send(sortedResult);
-      } catch (error) {
-        console.error("Error retrieving frozen items:", error);
-        res.status(500).send("Internal Server Error");
-      }
+    // app.get("/frozenSort", async (req, res) => {
+    //   try {
+    //     const result = await frozenCollection.find().toArray();
+    //     const sortedResult = result.sort((a, b) => a.Price - b.Price); // Sort by price in ascending order
+    //     res.send(sortedResult);
+    //   } catch (error) {
+    //     console.error("Error retrieving frozen items:", error);
+    //     res.status(500).send("Internal Server Error");
+    //   }
+    // });
+    app.get("/frozenPrice", async (req, res) => {
+      const sortOrder = req.query.sortOrder === "asc" ? 1 : -1;
+      const cursor = frozenCollection.find().sort({ price: sortOrder });
+      const result = await cursor.toArray();
+      res.send(result);
     });
 
     app.get("/frozenSearch/:text", async (req, res) => {
